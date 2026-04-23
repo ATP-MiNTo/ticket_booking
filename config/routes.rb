@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :bookings
-  resources :events, only: [:index] do
-    resources :bookings, only: [:create]
+  resources :events, only: [ :index ] do
+    resources :bookings, only: [ :create ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -1,15 +1,11 @@
 class BookingsController < ApplicationController
     def create
-        event = Event.find(params[:event_id])
-        Event.transaction do
-            event.lock!
-            if booking_params[:quantity].to_i > event.tickets_available
-                render json: { error: "Not enough tickets available" }, status: :unprocessable_entity
-                raise ActiveRecord::Rollback
-            end
+        result = Bookings::Create.call(event_id: params[:event_id], booking_params: booking_params)
 
-            booking = event.bookings.create!(booking_params)
-            render json: booking, status: :created
+        if result.success?
+            render json: result.booking, status: result.status
+        else
+            render json: { error: result.error }, status: result.status
         end
     end
 

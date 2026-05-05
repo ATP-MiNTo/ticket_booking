@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :bookings
+  resources :bookings do
+    member do
+      post :check_in
+    end
+  end
   resources :events, only: [ :index ] do
     resources :bookings, only: [ :create ]
   end

@@ -10,16 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_22_173522) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_01_200113) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "bookings", force: :cascade do |t|
+    t.string "check_in_code", default: "", null: false
+    t.datetime "checked_in_at"
     t.datetime "created_at", null: false
     t.string "email"
     t.bigint "event_id", null: false
     t.integer "quantity"
     t.datetime "updated_at", null: false
+    t.index ["check_in_code"], name: "index_bookings_on_check_in_code", unique: true
     t.index ["event_id"], name: "index_bookings_on_event_id"
   end
 
@@ -31,5 +34,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_173522) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.integer "amount_cents"
+    t.bigint "booking_id", null: false
+    t.datetime "created_at", null: false
+    t.string "currency"
+    t.string "provider"
+    t.string "provider_ref"
+    t.integer "status"
+    t.datetime "updated_at", null: false
+    t.index ["booking_id"], name: "index_payments_on_booking_id"
+  end
+
   add_foreign_key "bookings", "events"
+  add_foreign_key "payments", "bookings"
 end
